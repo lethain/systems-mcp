@@ -29,7 +29,7 @@ Finally, here is an example of using the `load_systems_documentation` tool to pr
 the context window and using it to help generate a systems specification.
 This is loosely equivalent to including [`lethain:systems/README.md`](https://raw.githubusercontent.com/lethain/systems/refs/heads/master/README.md) in the context window,
 but also includes a handful of additional examples
-(see the included files in [./docs/](./docs/].
+(see the included files in [./docs/](./docs/).
 
 ![Example prompt of loading documentation into context window](docs/sys-mcp-load-prompt.png)
 
