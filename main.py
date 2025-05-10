@@ -27,18 +27,32 @@ async def run_sys_model(spec: str, rounds: int = 100) -> str:
     try:
         # Import here to avoid import errors if module is missing
         from systems.parse import parse
-        from IPython.core.display import HTML
         
         debug_print(f"Running systems model for {rounds} rounds")
         
         # Parse the model and run it
         model = parse(spec)
         results = model.run(rounds=rounds)
+
+        if True:
+            return results
         
-        # Render as HTML table
-        rendered = model.render_html(results)
+        # Generate markdown table
+        columns = list(results[0].keys()) if results else []
         
-        return rendered
+        # Create header row
+        header = "| Round | " + " | ".join(columns) + " |"
+        separator = "|-------|" + "|".join(["-" * 10] * len(columns)) + "|"
+        
+        # Create data rows
+        rows = []
+        for i, result in enumerate(results):
+            values = [str(result.get(col, 0)) for col in columns]
+            rows.append(f"| {i} | " + " | ".join(values) + " |")
+        
+        # Combine into full table
+        table = header + "\n" + separator + "\n" + "\n".join(rows)
+        return table
     except Exception as e:
         debug_print(f"Error running systems model: {e}")
         return f"<div class='error'>Error running systems model: {str(e)}</div>"
@@ -111,55 +125,7 @@ async def render_sys_model(spec: str, rounds: int = 100, columns: Optional[List[
         debug_print(f"Error rendering systems model: {e}")
         return f"<div class='error'>Error rendering systems model: {str(e)}</div>"
 
-@mcp.tool()
-async def visualize_sys_model(spec: str) -> str:
-    """Generate a Graphviz visualization of a systems model.
-    
-    Args:
-        spec: The systems model specification
-    """
-    try:
-        # Import here to avoid import errors if module is missing
-        from systems.parse import parse
-        from systems.viz import as_dot
-        import base64
-        from io import BytesIO
-        import subprocess
-        
-        debug_print("Generating system model visualization")
-        
-        # Parse the model
-        model = parse(spec)
-        
-        # Get the DOT representation
-        dot_code = as_dot(model)
-        
-        # Try to render with Graphviz if available
-        try:
-            # Use subprocess to call dot
-            process = subprocess.Popen(
-                ['dot', '-Tpng'],
-                stdin=subprocess.PIPE,
-                stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE
-            )
-            stdout, stderr = process.communicate(dot_code.encode('utf-8'))
-            
-            if process.returncode != 0:
-                debug_print(f"Graphviz error: {stderr.decode('utf-8')}")
-                return f"<pre>{dot_code}</pre><p>Error rendering graph with Graphviz</p>"
-            
-            # Encode the image
-            encoded = base64.b64encode(stdout).decode('utf-8')
-            return f'<img src="data:image/png;base64,{encoded}" />'
-        except FileNotFoundError:
-            # Fallback to returning the DOT code if Graphviz is not installed
-            debug_print("Graphviz not found, returning DOT code")
-            return f"<pre>{dot_code}</pre><p>Install Graphviz to render this diagram</p>"
-            
-    except Exception as e:
-        debug_print(f"Error visualizing systems model: {e}")
-        return f"<div class='error'>Error visualizing systems model: {str(e)}</div>"
+
 
 @mcp.tool()
 async def provide_system_example() -> str:
@@ -222,8 +188,7 @@ DeprecationImpactedCustomers > ChurnedCustomers @ Leak(0.1)"""
 
 You can use this example with the other systems-mcp functions:
 - `run_sys_model` to see the numerical results
-- `render_sys_model` to visualize the stock values over time
-- `visualize_sys_model` to see the system structure"""
+- `render_sys_model` to visualize the stock values over time"""
     
     return output
 
