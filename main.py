@@ -1,12 +1,5 @@
-import os
 import sys
-import io
-import base64
 from typing import Any, Dict, List, Optional, Union
-from dataclasses import dataclass
-from datetime import datetime
-import matplotlib.pyplot as plt
-import numpy as np
 from mcp.server.fastmcp import FastMCP
 
 # Redirect debug prints to stderr
@@ -33,98 +26,10 @@ async def run_sys_model(spec: str, rounds: int = 100) -> str:
         # Parse the model and run it
         model = parse(spec)
         results = model.run(rounds=rounds)
-
-        if True:
-            return results
-        
-        # Generate markdown table
-        columns = list(results[0].keys()) if results else []
-        
-        # Create header row
-        header = "| Round | " + " | ".join(columns) + " |"
-        separator = "|-------|" + "|".join(["-" * 10] * len(columns)) + "|"
-        
-        # Create data rows
-        rows = []
-        for i, result in enumerate(results):
-            values = [str(result.get(col, 0)) for col in columns]
-            rows.append(f"| {i} | " + " | ".join(values) + " |")
-        
-        # Combine into full table
-        table = header + "\n" + separator + "\n" + "\n".join(rows)
-        return table
+        return results
     except Exception as e:
         debug_print(f"Error running systems model: {e}")
         return f"<div class='error'>Error running systems model: {str(e)}</div>"
-
-@mcp.tool()
-async def render_sys_model(spec: str, rounds: int = 100, columns: Optional[List[str]] = None, 
-                           title: Optional[str] = None) -> str:
-    """Generate a visualization of a systems model run as an image.
-    
-    Args:
-        spec: The systems model specification
-        rounds: Number of rounds to run (default: 100)
-        columns: Optional list of columns/stocks to include (default: all)
-        title: Optional title for the chart (default: none)
-    """
-    try:
-        # Import here to avoid import errors if module is missing
-        from systems.parse import parse
-        import matplotlib.pyplot as plt
-        import base64
-        from io import BytesIO
-        
-        debug_print(f"Rendering systems model chart for {rounds} rounds")
-        
-        # Parse the model and run it
-        model = parse(spec)
-        results = model.run(rounds=rounds)
-        
-        # Prepare the data for plotting
-        if columns is None:
-            # Use all stocks if no columns specified
-            # Get column names from the first result
-            if results and len(results) > 0:
-                columns = list(results[0].keys())
-            else:
-                columns = []
-        
-        # Create the plot
-        fig, ax = plt.subplots(figsize=(10, 6))
-        
-        # Plot each stock as a line
-        for column in columns:
-            values = [result.get(column, 0) for result in results]
-            ax.plot(values, label=column)
-        
-        # Set labels and title
-        ax.set_xlabel('Rounds')
-        ax.set_ylabel('Stock Value')
-        if title:
-            ax.set_title(title)
-        
-        # Add legend
-        ax.legend()
-        
-        # Convert plot to base64 encoded image
-        buffer = BytesIO()
-        plt.tight_layout()
-        plt.savefig(buffer, format='png', dpi=100)
-        buffer.seek(0)
-        image_png = buffer.getvalue()
-        buffer.close()
-        plt.close(fig)
-        
-        # Encode the image as base64
-        encoded = base64.b64encode(image_png).decode('utf-8')
-        html_img = f'<img src="data:image/png;base64,{encoded}" />'
-        
-        return html_img
-    except Exception as e:
-        debug_print(f"Error rendering systems model: {e}")
-        return f"<div class='error'>Error rendering systems model: {str(e)}</div>"
-
 
 
 @mcp.tool()
@@ -187,8 +92,7 @@ DeprecationImpactedCustomers > ChurnedCustomers @ Leak(0.1)"""
 ```
 
 You can use this example with the other systems-mcp functions:
-- `run_sys_model` to see the numerical results
-- `render_sys_model` to visualize the stock values over time"""
+- `run_sys_model` to see the numerical results"""
     
     return output
 
