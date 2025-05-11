@@ -3,6 +3,10 @@
 [systems-mcp](https://github.com/lethain/systems-mcp) is an MCP server for interacting with
 the [`lethain:systems`](https://github.com/lethain/systems/) library for systems modeling.
 
+<a href="https://glama.ai/mcp/servers/@lethain/systems-mcp">
+  <img width="380" height="200" src="https://glama.ai/mcp/servers/@lethain/systems-mcp/badge" alt="Systems MCP server" />
+</a>
+
 It provides two tools:
 
 * `run_systems_model` runs the `systems` specification of a systems model.
@@ -75,5 +79,3 @@ It should work similarly on other platforms.
 
 5. Close Claude and reopen it.
 6. It should work...
-
-
