@@ -54,7 +54,7 @@ It should work similarly on other platforms.
     Then you want to update your `claude_desktop_config.json`.
     (Note that you should replace `will` with your user, e.g. the output of `whoami`.
 
-        cd /Users/will/Library/Application Support/Claude
+        cd  ~/Library/Application\ Support/Claude/
         vi claude_desktop_config.json
 
     Then add this section:
