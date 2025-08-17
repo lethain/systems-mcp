@@ -1,4 +1,5 @@
 import os.path
+import json
 import sys
 from typing import Any, Dict, List, Optional, Union
 from mcp.server.fastmcp import FastMCP
@@ -32,7 +33,7 @@ async def run_systems_model(spec: str, rounds: int = 100) -> str:
         # Parse the model and run it
         model = parse(spec)
         results = model.run(rounds=rounds)
-        return results
+        return json.dumps(results, indent=2, default=str)
     except Exception as e:
         debug_print(f"Error running systems model: {e}")
         return f"<div class='error'>Error running systems model: {str(e)}</div>"
