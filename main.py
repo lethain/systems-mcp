@@ -53,7 +53,7 @@ async def load_systems_documentation() -> str:
             with open(os.path.abspath(rel_file_path), 'r') as fin:
                 DOC_CACHE += fin.read() + "\n\n"
 
-    return DOC_CACHE
+    return f"Systems Documentation:\n\n {DOC_CACHE}"
 
 
 if __name__ == "__main__":
